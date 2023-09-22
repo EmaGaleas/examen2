@@ -4,10 +4,13 @@
  */
 package exam2;
 
-/**
- *
- * @author pcast
- */
-public class Trophy_e {
-    
+
+enum Trophy_e {
+    PLATINO(5), ORO(3), PLATA(2), BRONCE(1);
+    public final int points;
+
+    Trophy_e(int points) {
+        this.points = points;
+    }
 }
+

@@ -38,10 +38,10 @@ public class HashTable {
             tmp=tmp.siguiente;
         }
     }
-    public long search(String user) {
+    public long search(String user){
         Entry tmp=list;
         while (tmp!= null) {
-            if (tmp.username.equals(user)) {
+            if (tmp.username.equals(user)){
                 return tmp.pos;
             }
             tmp=tmp.siguiente;
