@@ -10,7 +10,7 @@ enum Trophy_e {
     public final int points;
 
     Trophy_e(int points) {
-        this.points = points;
+        this.points=points;
     }
 }
 

@@ -7,7 +7,9 @@ package exam2;
 
 public class HashTable {
     Entry list;
-    
+    public HashTable() {
+        this.list=null;
+    }
     public void add(String user, long pos){
         Entry a=new Entry(user, pos);
         if(list==null){

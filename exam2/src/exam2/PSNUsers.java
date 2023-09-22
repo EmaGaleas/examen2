@@ -6,50 +6,73 @@ package exam2;
 
 import java.io.*;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 public class PSNUsers {
     RandomAccessFile raf;
     HashTable users;
 
-    public PSNUsers() throws IOException {
-        this.raf=new RandomAccessFile("psn", "rw");
-        this.users=new HashTable();
-        reloadHashTable();
+    public PSNUsers() {
+        try {
+            this.raf = new RandomAccessFile("psn", "rw");
+            this.users = new HashTable();
+            reloadHashTable();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    private void reloadHashTable() throws IOException {
-        raf.seek(0);
-        while (raf.getFilePointer()< raf.length()){
-            long pos=raf.getFilePointer();
-            String username=raf.readUTF();
-            boolean active=raf.readBoolean();
-            if (active){
+    private void reloadHashTable(){
+        try {
+            raf.seek(0);
+            while (raf.getFilePointer()< raf.length()) {
+                long pos=raf.getFilePointer();
+                String username=raf.readUTF();
                 users.add(username, pos);
+                raf.skipBytes(9); 
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     public void addUser(String username) throws IOException {
-        long pos=raf.getFilePointer();
+        if (users.search(username) != -1){
+            JOptionPane.showMessageDialog(null, "YA EXISTE");
+            return;
+        }
+        JOptionPane.showMessageDialog(null, "AGREGADO CORRECTAMENTE");
+        raf.seek(raf.length());
+        long pos = raf.length();
         raf.writeUTF(username);
-        raf.writeInt(0);
-        raf.writeInt(0);
-        raf.writeBoolean(true); 
         users.add(username, pos);
+        raf.writeBoolean(true); 
+        raf.writeInt(0); //puntos
+        raf.writeInt(0); //trofeso
     }
-
+//////////
     public void deactivateUser(String username) throws IOException {
-        long pos=users.search(username);
-        if (pos!= -1) {
-            raf.seek(pos);
-            String user=raf.readUTF();
-            if (user.equals(username)) {
-//            raf.readInt();
-//            raf.readInt();
-                raf.skipBytes(8);
-                raf.writeBoolean(false);
-                users.remove(username);
-            }
+    raf.seek(0);
+    while (raf.getFilePointer() < raf.length()) {
+        long pos = raf.getFilePointer(); // Guarda la posición actual
+        String user = raf.readUTF();
+
+        if (user.equals(username)) {
+            raf.seek(pos); 
+            raf.readUTF(); 
+            raf.writeBoolean(false); 
+            JOptionPane.showMessageDialog(null, "USUARIO DESACTIVADO");           
+            System.out.println("Usuario desactivado");
+            return; 
+        } else {
+            raf.readBoolean();
+            raf.readInt(); 
+            raf.readInt(); 
         }
     }
+JOptionPane.showMessageDialog(null, "NO EXISTE");
+System.out.println("El usuario no existe");
+}
+
+
 
     public void addTrophieTo(String username, String trophyGame, String trophyName, Trophy_e type) throws IOException {
         long pos=users.search(username);
@@ -63,21 +86,24 @@ public class PSNUsers {
                 raf.writeUTF(trophyGame);
                 raf.writeUTF(trophyName);
                 raf.writeUTF(type.name());
-                raf.writeUTF(new Date().toString());
+                Date fecha = new Date();
+                raf.writeUTF(fecha.toString());
                 raf.seek(pos+4); 
                 raf.writeInt(p+type.points);
                 raf.writeInt(t+1);
             }
         }
     }
+    
     public void playerInfo(String username) throws IOException {
         long pos=users.search(username);
         if (pos!= -1){
             raf.seek(pos);
             String u=raf.readUTF();
+            boolean a=raf.readBoolean();
             int p=raf.readInt();
             int t=raf.readInt();
-            boolean a=raf.readBoolean();
+            JOptionPane.showMessageDialog(null, "USERNAME:  "+u+"\nPUNTAJE:   "+p+"\n#TROFEOS:  "+t+"\nESTADO ACT:"+a);
             System.out.println("USERNAME:  "+u+"\nPUNTAJE:   "+p+"\n#TROFEOS:  "+t+"\nESTADO ACT:"+a);
             while (raf.getFilePointer()< raf.length()){
                 String juego=raf.readUTF();
@@ -86,7 +112,11 @@ public class PSNUsers {
                 String fecha=raf.readUTF();
                 System.out.println("TROFEO:\t "+fecha+" - "+tipo+" - "+juego+" - "+desc);
             }
+        }else{
+            JOptionPane.showMessageDialog(null, "NO EXISTE");
         }
+         
+
     }
 
 }
