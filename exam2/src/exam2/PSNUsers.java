@@ -52,7 +52,7 @@ public class PSNUsers {
     public void deactivateUser(String username) throws IOException {
         raf.seek(0);
         while (raf.getFilePointer() < raf.length()) {
-            long pos = raf.getFilePointer(); // Guarda la posición actual
+            long pos = raf.getFilePointer(); 
             String user = raf.readUTF();
 
             if (user.equals(username)) {
