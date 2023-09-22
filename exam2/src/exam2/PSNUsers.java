@@ -50,27 +50,27 @@ public class PSNUsers {
     }
 //////////
     public void deactivateUser(String username) throws IOException {
-    raf.seek(0);
-    while (raf.getFilePointer() < raf.length()) {
-        long pos = raf.getFilePointer(); // Guarda la posición actual
-        String user = raf.readUTF();
+        raf.seek(0);
+        while (raf.getFilePointer() < raf.length()) {
+            long pos = raf.getFilePointer(); // Guarda la posición actual
+            String user = raf.readUTF();
 
-        if (user.equals(username)) {
-            raf.seek(pos); 
-            raf.readUTF(); 
-            raf.writeBoolean(false); 
-            JOptionPane.showMessageDialog(null, "USUARIO DESACTIVADO");           
-            System.out.println("Usuario desactivado");
-            return; 
-        } else {
-            raf.readBoolean();
-            raf.readInt(); 
-            raf.readInt(); 
+            if (user.equals(username)) {
+                raf.seek(pos); 
+                raf.readUTF(); 
+                raf.writeBoolean(false); 
+                JOptionPane.showMessageDialog(null, "USUARIO DESACTIVADO");           
+                System.out.println("Usuario desactivado");
+                return; 
+            } else {
+                raf.readBoolean();
+                raf.readInt(); 
+                raf.readInt(); 
+            }
         }
+                JOptionPane.showMessageDialog(null, "NO EXISTE");
+        System.out.println("El usuario no existe");
     }
-JOptionPane.showMessageDialog(null, "NO EXISTE");
-System.out.println("El usuario no existe");
-}
 
 
 
